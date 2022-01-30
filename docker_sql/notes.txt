@@ -1,0 +1,18 @@
+# to run a postgres docker instance
+# line 9, map local directory to docker instance dir
+# line 10, map local port to postgres docker port
+
+docker run -it \
+-e POSTGRES_USER="dej" \
+-e POSTGRES_PASSWORD="dej" \
+-e POSTGRES_DB="ny_taxi" \
+-v /home/dej/DE/'My DE projects'/ny-tlc-data-analytics/docker_sql/ny_taxi_postgres_data:/var/lib/postgresql/data \
+-p 4321:5432 \
+postgres:13
+
+
+# to log to the pg instance
+# install pgcli
+sudo apt install pgcli
+
+pgcli -h localhost -u root -d dbname
