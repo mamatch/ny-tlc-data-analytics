@@ -39,3 +39,20 @@ docker run -it \
 --name=pgadmin \
 -p 8080:80 \
 dpage/pgadmin4
+
+# to change notebook in script
+jupyter nbconvert --to=script upload-data.py
+jupyter nbconvert file.ipynb --to python
+
+# ingest with script
+
+URL="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+
+python ingest.py \
+--user=dej \
+--password=dej \
+--host=localhost \
+--port=4321 \
+--dbname=ny_taxi \
+--table_name=yellow_taxi_data \
+--url=${URL}
