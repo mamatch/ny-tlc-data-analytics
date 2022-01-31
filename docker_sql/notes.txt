@@ -2,12 +2,19 @@
 # line 9, map local directory to docker instance dir
 # line 10, map local port to postgres docker port
 
+
+
+# network
+docker network create pg-network
+
 docker run -it \
 -e POSTGRES_USER="dej" \
 -e POSTGRES_PASSWORD="dej" \
 -e POSTGRES_DB="ny_taxi" \
 -v /home/dej/DE/'My DE projects'/ny-tlc-data-analytics/docker_sql/ny_taxi_postgres_data:/var/lib/postgresql/data \
 -p 4321:5432 \
+--network=pg-network \
+--name=pg-database \
 postgres:13
 
 
@@ -16,3 +23,19 @@ postgres:13
 sudo apt install pgcli
 
 pgcli -h localhost -u root -d dbname
+
+
+# link to dataset
+https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv
+https://www1.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf
+
+
+# pgadmin docker
+
+docker run -it \
+-e PGADMIN_DEFAULT_EMAIL="eteilj@gmail.com" \
+-e PGADMIN_DEFAULT_PASSWORD="dej" \
+--network=pg-network \
+--name=pgadmin \
+-p 8080:80 \
+dpage/pgadmin4
