@@ -55,4 +55,17 @@ python ingest.py \
 --port=4321 \
 --dbname=ny_taxi \
 --table_name=yellow_taxi_data \
---url=${URL}
+--url="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+
+docker build -t taxi_ingest:v001 .
+
+docker run -it \
+--network=pg-network \
+taxi_ingest:v001 \
+--user=dej \
+--password=dej \
+--host=pg-database \
+--port=5432 \
+--dbname=ny_taxi \
+--table_name=yellow_taxi_data \
+--url="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
