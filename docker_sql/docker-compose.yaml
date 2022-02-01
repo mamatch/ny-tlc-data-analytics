@@ -2,7 +2,7 @@ services:
   pgdatabase:
     image: postgre:13
     environment:
-      - POSTGRES_USER=dej
+      - POSTGRES_USER=test
       - POSTGRES_PASSWORD=dej
       - POSTGRES_DB=ny_taxi
     volumes:
