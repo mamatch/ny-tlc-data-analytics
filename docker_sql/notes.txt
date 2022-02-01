@@ -69,3 +69,6 @@ taxi_ingest:v001 \
 --dbname=ny_taxi \
 --table_name=yellow_taxi_data \
 --url="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+
+docker-compose run -d
+docker-compose down 

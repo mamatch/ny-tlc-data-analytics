@@ -1,8 +1,8 @@
 services:
   pgdatabase:
-    image: postgre:13
+    image: postgres:13
     environment:
-      - POSTGRES_USER=test
+      - POSTGRES_USER=dej
       - POSTGRES_PASSWORD=dej
       - POSTGRES_DB=ny_taxi
     volumes:
@@ -10,7 +10,7 @@ services:
     ports:
       - "4321:5432"
   pgadmin:
-    image: dpage/pqadmin4
+    image: dpage/pgadmin4
     environment:
       - PGADMIN_DEFAULT_EMAIL=eteilj@gmail.com
       - PGADMIN_DEFAULT_PASSWORD=dej
