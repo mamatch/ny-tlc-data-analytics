@@ -72,3 +72,10 @@ taxi_ingest:v001 \
 
 docker-compose run -d
 docker-compose down 
+
+# Setup gcp sdk
+
+export GOOGLE_APPLICATION_CREDENTIALS="PATH T KEY"
+gcloud auth application-default login
+
+
