@@ -1,0 +1,18 @@
+services:
+  pgdatabase:
+    image: postgre:13
+    environment:
+      - POSTGRES_USER=dej
+      - POSTGRES_PASSWORD=dej
+      - POSTGRES_DB=ny_taxi
+    volumes:
+      - "./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"
+    ports:
+      - "4321:5432"
+  pgadmin:
+    image: dpage/pqadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=eteilj@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=dej
+    ports:
+      - "8080:80"
