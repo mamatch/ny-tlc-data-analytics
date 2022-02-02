@@ -1,0 +1,16 @@
+# download airflow docker yaml service from airlfow doc
+
+curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.2.3/docker-compose.yaml'
+
+# create directories
+
+mkdir -p ./dags ./logs ./plugins
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+
+provide a Dockerfile image for airflow with gcp provider
+
+requirements
+pyarrow to convert data in parquet files
+
+docker-compose up airflow-init
+docker-compose up
