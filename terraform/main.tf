@@ -4,7 +4,7 @@ terraform {
   }
   required_providers {
     google = {
-      source = "harshicorp/google"
+      source = "hashicorp/google"
     }
   }
 }
@@ -26,7 +26,7 @@ resource "google_storage_bucket" "data-lake-bucket" {
   uniform_bucket_level_access = true
 
   versioning {
-    enable = true
+    enabled = true
   }
 
   lifecycle_rule {
@@ -37,5 +37,11 @@ resource "google_storage_bucket" "data-lake-bucket" {
       age = 30 //days
     }
   }
+}
+
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = var.BQ_DATASET
+  project    = var.project
+  location   = var.region
 }
 
