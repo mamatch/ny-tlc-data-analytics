@@ -57,6 +57,8 @@ x-airflow-common:
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    GCP_PROJECT_ID: 'long-canto-340020 '
+    GCP_GSC_BUCKET: 'ny_data_lake_long-canto-340020 '
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
