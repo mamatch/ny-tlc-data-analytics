@@ -20,7 +20,18 @@ dataset_file = "yellow_tripdata_2021-01.csv"
 dataset_url = "https://s3.amazonaws.com/nyc-tlc/trip+data/{}".format(dataset_file)
 path_to_local_home = os.environ.get("AIRFLOW_HOME", '/opt/airflow/')
 parquet_file = dataset_file.replace('.csv', '.parquet')
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trips_data_all')
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET")
+
+
+def download_file():
+    """
+    Download the if it doesn't exist
+    """
+    if not os.path.exists("{}/{}".format(path_to_local_home, dataset_file)):
+        os.system("curl -sS {} > {}/{}".format(dataset_url, path_to_local_home, dataset_file))
+        logging.info("Downloading completed")
+    else:
+        logging.info("File already exists.")
 
 
 def format_to_parquet(src_file):
@@ -31,18 +42,30 @@ def format_to_parquet(src_file):
     pq.write_table(table, src_file.replace('.csv', '.parquet'))
 
 
-def upload_to_gcs(bucket, object_name, local_file):
+def upload_to_gcs(bucket_name, object_name, local_file):
     """
     
     """
+    creds = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    logging.info("creds path: {}".format(creds))
+
+    if not os.path.exists(creds):
+        logging.info("File doesn't exist.")
+
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024 # 5Mo
     storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024
 
-    client = storage.client()
-    bucket = client.bucket(bucket)
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
 
     blob = bucket.blob(object_name)
     blob.upload_from_filename(local_file)
+
+    print(
+        "File {} uploaded to {}.".format(
+            local_file, object_name
+        )
+    )
 
 
 default_args = {
@@ -61,13 +84,15 @@ with DAG(
     tags=['ny_de'],
 ) as dag:
 
-    download_data_task = BashOperator(
+    download_data_task = PythonOperator(
         task_id="download_data_task",
-        bash_command="curl -sS {} > {}/{}".format(dataset_url, path_to_local_home, dataset_file),
-        # env: Optional[Dict[str, str]] = None,
-        # output_encoding: str = 'utf-8',
-        # skip_exit_code: int = 99,
+        python_callable=download_file,
+        # op_kwargs: Optional[Dict] = None,
+        # op_args: Optional[List] = None,
+        # templates_dict: Optional[Dict] = None
+        # templates_exts: Optional[List] = None
     )
+    
 
     format_to_parquet_task = PythonOperator(
         task_id="format_to_parquet_task",
@@ -84,7 +109,7 @@ with DAG(
         task_id="local_to_gcs_task",
         python_callable=upload_to_gcs,
         op_kwargs={
-            "bucket": BUCKET,
+            "bucket_name": BUCKET,
             "object_name": "raw/{}".format(parquet_file),
             "local_file": "{}/{}".format(path_to_local_home, parquet_file)
         },
